@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجر سنو | سجل العمليات الملكي الفاخر</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    
+    <style>
+        /* نظام الهوية البصرية الفاخرة والمتغيرات الديناميكية */
+        :root {
+            --bg-gradient: radial-gradient(circle at center, #1a2a40, #0a0e14);
+            --panel-bg: rgba(15, 25, 45, 0.75);
+            --accent-glow: #d4af37; /* ذهبي ملكي افتراضي للثيم الولادي */
+            --text-primary: #ffffff;
+            --border-style: 1px solid rgba(212, 175, 55, 0.4);
+            --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            width: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* الطبقة الزجاجية الخلفية لتعميق البعد البصري */
+        .bg-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        /* لودر التحميل الاحترافي الفخم */
+        #loader {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #06090e;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        .spinner {
+            width: 50px; height: 50px;
+            border: 3px solid rgba(212, 175, 55, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--accent-glow);
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* حاوية عناصر الشاشة الرئيسية */
+        .dashboard-container {
+            width: 95%;
+            max-width: 650px;
+            margin: 40px auto;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        /* العنوان الملكي المزخرف */
+        .royal-header {
+            text-align: center;
+            color: var(--accent-glow);
+            font-size: 1.6em;
+            font-weight: 900;
+            margin-bottom: 25px;
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+            letter-spacing: 1px;
+            transition: color 0.5s;
+        }
+
+        /* شريط التحكم العلوي بالثيمات والموسيقى */
+        .control-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--panel-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: var(--border-style);
+            padding: 12px 20px;
+            border-radius: 18px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 25px;
+        }
+        .theme-group { display: flex; gap: 10px; }
+        .control-btn {
+            padding: 8px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+            transition: 0.3s ease;
+            background: rgba(0,0,0,0.3);
+            color: #fff;
+        }
+        .control-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+
+        /* محرك البحث الملكي المضيء */
+        .search-wrapper {
+            position: relative;
+            margin-bottom: 25px;
+        }
+        .search-input {
+            width: 100%;
+            padding: 15px 45px 15px 15px;
+            background: rgba(0, 0, 0, 0.4);
+            border: var(--border-style);
+            border-radius: 14px;
+            color: #white;
+            font-size: 14px;
+            outline: none;
+            box-sizing: border-box;
+            transition: 0.3s;
+            text-align: right;
+        }
+        .search-input:focus {
+            box-shadow: 0 0 15px var(--accent-glow);
+            background: rgba(0, 0, 0, 0.6);
+        }
+        .search-icon {
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            transform: translateY(-50%);
+            color: var(--accent-glow);
+            font-size: 16px;
+        }
+
+        /* نظام التبويبات والفلترة المتطور */
+        .filter-tabs {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        .tab-item {
+            background: var(--panel-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.05);
+            color: var(--text-primary);
+            padding: 12px 5px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 13px;
+            text-align: center;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: var(--card-shadow);
+        }
+        .tab-item:hover { transform: scale(1.03); }
+        .tab-item.active {
+            background: var(--accent-glow);
+            color: #000000;
+            font-weight: 900;
+            box-shadow: 0 0 20px var(--accent-glow);
+            border-color: var(--accent-glow);
+        }
+
+        /* الحاوية الديناميكية للبطاقات المشغولة بالزخرفة */
+        .orders-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* كود بطاقة التصميم الفاخرة المطلوبة بالكامل */
+        .royal-card {
+            background: var(--panel-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: var(--border-style);
+            border-radius: 22px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            position: relative;
+            overflow: hidden;
+            transition: 0.4s ease;
+            animation: slideUp 0.5s ease forwards;
+        }
+        .royal-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 15px rgba(212, 175, 55, 0.1);
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* التقسيمات الزخرفية للبطاقة */
+        .card-decor-top { color: rgba(255,255,255,0.15); text-align: center; font-size: 12px; margin-bottom: 15px; letter-spacing: 2px; }
+        .card-decor-bottom { color: rgba(255,255,255,0.15); text-align: center; font-size: 12px; margin-top: 15px; letter-spacing: 2px; }
+        
+        .card-field {
+            margin-bottom: 15px;
+            padding-right: 15px;
+            border-right: 2px solid var(--accent-glow);
+        }
+        .field-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            opacity: 0.6;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .field-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        /* badges حالات الطلب المضيئة */
+        .badge-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: bold;
+            border: 1px solid transparent;
+        }
+        .status-approved { background: rgba(0, 255, 136, 0.1); color: #00ff88; border-color: rgba(0, 255, 136, 0.3); box-shadow: 0 0 10px rgba(0, 255, 136, 0.1); }
+        .status-pending { background: rgba(255, 152, 0, 0.1); color: #ff9800; border-color: rgba(255, 152, 0, 0.3); box-shadow: 0 0 10px rgba(255, 152, 0, 0.1); }
+        .status-rejected { background: rgba(255, 77, 77, 0.1); color: #ff4d4d; border-color: rgba(255, 77, 77, 0.3); box-shadow: 0 0 10px rgba(255, 77, 77, 0.1); }
+
+        .counter-badge {
+            background: rgba(255, 77, 77, 0.2);
+            color: #ff4d4d;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 6px;
+            margin-top: 5px;
+            display: inline-block;
+            border: 1px solid rgba(255, 77, 77, 0.3);
+        }
+
+        /* إخفاء مشغل يوتيوب غير المرئي */
+        #musicPlayerWrap { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; }
+        
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            opacity: 0.5;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <div class="spinner"></div>
+        <p style="margin-top: 15px; font-weight: bold; color: var(--accent-glow)">انتظروا شوي يا اوتاكو ❤️‍🩹...</p>
+    </div>
+
+    <div class="bg-overlay"></div>
+
+    <div class="dashboard-container">
+        
+        <div class="royal-header" id="mainHeader">╭━━━〔 📋 سجل العمليات الملكي 〕━━━╮</div>
+
+        <div class="control-panel">
+            <div class="theme-group">
+                <button class="control-btn" style="background: linear-gradient(135deg, #1a2a40, #0a0e14); border-color: #d4af37;" onclick="switchTheme('boy', this)">ولادي ☠️</button>
+                <button class="control-btn" style="background: linear-gradient(135deg, #3d1a2d, #1a0d14); border-color: #ffb7c5;" onclick="switchTheme('girl', this)">بناتي 💕</button>
+            </div>
+            <button class="control-btn" onclick="handleMusicToggle()" id="musicBtn" style="color: var(--accent-glow)"><i class="fas fa-music"></i> تشغيل الصوت</button>
+        </div>
+
+        <div class="search-wrapper">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="liveSearch" class="search-input" placeholder="🔍 ابحث عن المشتري أو اسم السلعة..." oninput="triggerFilter()">
+        </div>
+
+        <div class="filter-tabs">
+            <div class="tab-item active" onclick="changeActiveTab('all', this)">الكل</div>
+            <div class="tab-item" onclick="changeActiveTab('approved', this)">المقبول ✅</div>
+            <div class="tab-item" onclick="changeActiveTab('pending', this)">المعلق ⏳</div>
+            <div class="tab-item" onclick="changeActiveTab('rejected', this)">المرفوض ❌</div>
+        </div>
+
+        <div id="ordersFeed" class="orders-feed"></div>
+
+    </div>
+
+    <div id="musicPlayerWrap">
+        <iframe id="ytPlayer" width="1" height="1" src="https://www.youtube.com/embed/sP7tY2PqRQc?enablejsapi=1" frameborder="0" allow="autoplay"></iframe>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+        import { getFirestore, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyAXja7crg6YouJDj_bZ4m--o1HKNIOnnkk",
+          authDomain: "bank-7f833.firebaseapp.com",
+          projectId: "bank-7f833",
+          storageBucket: "bank-7f833.firebasestorage.app",
+          messagingSenderId: "367628564974",
+          appId: "1:367628564974:web:79d196d8d25c4b887336ff"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // متغيرات الحالة العالمية للتحكم الفوري بالبيانات
+        window.allOrdersCache = [];
+        window.currentSelectedFilter = 'all';
+
+        // الاتصال اللحظي والمستمر مع خوادم الفايربيس (Real-time Sync)
+        onSnapshot(query(collection(db, "orders"), orderBy("date", "desc")), (snapshot) => {
+            window.allOrdersCache = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            triggerFilter();
+            
+            // إخفاء شاشة اللودر فور إتمام أول عملية مزامنة ناجحة
+            const loader = document.getElementById('loader');
+            if(loader) loader.style.opacity = '0';
+            setTimeout(() => { if(loader) loader.style.display = 'none'; }, 500);
+        }, (error) => {
+            console.error("خطأ أثناء جلب البيانات الملكية:", error);
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script>
+        let isMusicPlaying = false;
+        let rejectCounters = {}; // قاموس داخلي لحساب تكرار مرات الرفض ديناميكياً
+
+        // دالة عرض الإشعارات الفاخرة
+        function triggerToast(message) {
+            Toastify({ 
+                text: message, 
+                duration: 3500, 
+                gravity: "top", 
+                position: "center", 
+                style: { background: "var(--accent-glow)", color: "#000000", fontWeight: "bold", borderRadius: "14px", boxShadow: "0 5px 15px rgba(0,0,0,0.3)" } 
+            }).showToast();
+        }
+
+        // دالة تبديل التبويبات الرباعية العلوية
+        function changeActiveTab(filterType, element) {
+            document.querySelectorAll('.tab-item').forEach(tab => tab.classList.remove('active'));
+            element.classList.add('active');
+            window.currentSelectedFilter = filterType;
+            triggerFilter();
+        }
+
+        // محرك الفلترة الذكي (يدمج البحث الفوري + التبويب المختار معاً)
+        function triggerFilter() {
+            const feedContainer = document.getElementById('ordersFeed');
+            if (!feedContainer || !window.allOrdersCache) return;
+
+            const searchQuery = document.getElementById('liveSearch').value.toLowerCase().trim();
+            
+            // تصفية البيانات أولاً بناءً على حالة التبويب المختار
+            let processedData = window.currentSelectedFilter === 'all' 
+                ? window.allOrdersCache 
+                : window.allOrdersCache.filter(item => item.status === window.currentSelectedFilter);
+
+            // تصفية البيانات ثانياً بناءً على كلمة البحث (الاسم أو السلعة)
+            if (searchQuery !== "") {
+                processedData = processedData.filter(item => 
+                    (item.nick && item.nick.toLowerCase().includes(searchQuery)) || 
+                    (item.itemName && item.itemName.toLowerCase().includes(searchQuery))
+                );
+            }
+
+            // تصفير وإعادة بناء العدادات الداخلية لعمليات الرفض تلقائياً لضمان الدقة
+            rejectCounters = {};
+            window.allOrdersCache.forEach(o => {
+                if(o.status === 'rejected' && o.nick) {
+                    rejectCounters[o.nick] = (rejectCounters[o.nick] || 0) + 1;
+                }
+            });
+
+            // عرض لوحة البيانات الفارغة في حال انعدام النتائج
+            if (processedData.length === 0) {
+                feedContainer.innerHTML = `<div class="no-data">لا توجد عمليات مسجلة تحت هذا التصنيف حالياً...</div>`;
+                return;
+            }
+
+            // بناء وطباعة الكود الهيكلي الفاخر المخصص والمزخرف للبطاقات بدقة متناهية
+       feedContainer.innerHTML = processedData.map(order => {
+                let statusBadgeHTML = "";
+                let rejectionInfoHTML = "";
+
+                if (order.status === 'approved') {
+                    statusBadgeHTML = `<span class="badge-status status-approved"><i class="fas fa-check-circle"></i> موافق</span>`;
+                } else if (order.status === 'pending') {
+                    statusBadgeHTML = `<span class="badge-status status-pending"><i class="fas fa-hourglass-half"></i> معلق</span>`;
+                } else if (order.status === 'rejected') {
+                    statusBadgeHTML = `<span class="badge-status status-rejected"><i class="fas fa-times-circle"></i> مرفوض</span>`;
+                    // حساب واستخراج كم مرة تم رفض هذا المشتري وإدراجها ديناميكياً كما طلبت
+                    const times = rejectCounters[order.nick] || 1;
+                    rejectionInfoHTML = `<div class="counter-badge"><i class="fas fa-exclamation-triangle"></i> رُفض هذا المشتري: ${times} مرات</div>`;
+                }
+
+                const displayDate = order.date ? new Date(order.date).toLocaleString('ar-SA', { hour12: true }) : 'تاريخ غير معروف';
+
+                return `
+                    <div class="royal-card">
+                        <div class="card-decor-top">╭━━━〔 📋 تفاصيل العملية 〕━━━╮</div>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                            <div class="card-field" style="border-right: none; padding-right: 0;">
+                                <div class="field-label"><i class="fas fa-shopping-bag"></i> اسـم الـمـنـتـج:</div>
+                                <div class="field-value" style="color: var(--accent-glow); font-size: 18px;">${order.itemName || 'سلعة غير مسمى'}</div>
+                            </div>
+                            <div>${statusBadgeHTML}</div>
+                        </div>
+
+                        <div class="card-field">
+                            <div class="field-label"><i class="fas fa-user"></i> لـقـب الـمـشـتـري:</div>
+                            <div class="field-value">${order.nick || 'عضو مجهول'}</div>
+                        </div>
+
+                        <div class="card-field" style="margin-bottom: 5px;">
+                            <div class="field-label"><i class="fas fa-calendar-alt"></i> تـاريـخ الـسـلـعـة:</div>
+                            <div class="field-value" style="font-size: 13px; opacity: 0.85;">${displayDate}</div>
+                        </div>
+
+                        ${rejectionInfoHTML}
+
+                        <div class="card-decor-bottom">╰━━━〔🛍️🛒 متجر سنو ❤️‍🩹 〕━━━╯</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // نظام تبديل الثيمات الفاخر فائق التطور والنعومة المتكامل (Ultra Premium Theme Engine)
+        function switchTheme(themeMode, buttonElement) {
+            const root = document.documentElement;
+            const headerElement = document.getElementById('mainHeader');
+            
+            if (themeMode === 'boy') {
+                root.style.setProperty('--bg-gradient', 'radial-gradient(circle at center, #1a2a40, #0a0e14)');
+                root.style.setProperty('--panel-bg', 'rgba(15, 25, 45, 0.75)');
+                root.style.setProperty('--accent-glow', '#d4af37'); // الذهبي الملكي الأصيل
+                root.style.setProperty('--border-style', '1px solid rgba(212, 175, 55, 0.4)');
+                if(headerElement) headerElement.innerText = "╭━━━〔 📋 سجل العمليات الملكي 〕━━━╮";
+                triggerToast("تم تفعيل الثيم الأزرق الملكي بنجاح 🛡️");
+            } else if (themeMode === 'girl') {
+                root.style.setProperty('--bg-gradient', 'radial-gradient(circle at center, #3d1a2d, #1a0d14)');
+                root.style.setProperty('--panel-bg', 'rgba(45, 15, 30, 0.75)');
+                root.style.setProperty('--accent-glow', '#ffb7c5'); // الزهري اللؤلؤي البراق الكريستالي
+                root.style.setProperty('--border-style', '1px solid rgba(255, 183, 197, 0.4)');
+                if(headerElement) headerElement.innerText = "╭━━━〔 🎀 سجل العمليات اللؤلؤي 〕━━━╮";
+                triggerToast("تم تفعيل الثيم الزهري الملكي بنجاح 💕");
+            }
+            triggerFilter(); // إعادة رندرة الألوان للبطاقات فوراً
+        }
+
+        // إدارة مشغل الصوتيات والأوامر البرمجية لليوتيوب
+        function handleMusicToggle() {
+            const playerIframe = document.getElementById('ytPlayer');
+            const musicButton = document.getElementById('musicBtn');
+            if (!playerIframe) return;
+
+            if (!isMusicPlaying) {
+                playerIframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+                isMusicPlaying = true;
+                if(musicButton) musicButton.innerHTML = `<i class="fas fa-pause"></i> إيقاف الصوت`;
+                triggerToast("تم تشغيل القرآن الكريم، أنصت وبارك الله فيك 🌾");
+            } else {
+                playerIframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+                isMusicPlaying = false;
+                if(musicButton) musicButton.innerHTML = `<i class="fas fa-music"></i> تشغيل الصوت`;
+                triggerToast("تم إيقاف الصوت مؤقتاً 🔇");
+            }
+        }
+    </script>
+</body>
+</html>
